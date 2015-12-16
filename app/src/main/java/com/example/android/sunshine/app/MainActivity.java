@@ -8,6 +8,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -56,7 +63,28 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            String[] forecastArray = {
+                    "Today - Sunny - 88/63",
+                    "Tomorrow - Sunny - 90/55",
+                    "Sun - Sunny - 44/63"
+            };
+
+            List<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                    // The current context (in this case the fragments parent activity)
+                    getActivity(),
+                    // Id of list item layout
+                    R.layout.list_item_forecast,
+                    // Id of the textview to populate
+                    R.id.list_item_forecast_textview,
+                    // data
+                    weekForecast);
+
+
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            ListView viewById = (ListView) rootView.findViewById(R.id.list_view_forecast);
+            viewById.setAdapter(adapter);
             return rootView;
         }
     }
