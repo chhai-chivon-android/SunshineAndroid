@@ -16,9 +16,11 @@
 package com.example.android.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -52,6 +54,12 @@ import java.util.List;
  */
 public class ForecastFragment extends Fragment {
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        fetchWeather();
+    }
+
     private ArrayAdapter<String> mForecastAdapter;
 
     public ForecastFragment() {
@@ -76,11 +84,19 @@ public class ForecastFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("94043");
+            fetchWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void fetchWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String userLocation = prefs.getString(getString(R.string.pref_location_key), getString(R.string.pref_location_default));
+        Log.v("MyTag", "trying to get weather for " + userLocation);
+        weatherTask.execute(userLocation );
     }
 
     @Override
